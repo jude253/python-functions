@@ -9,7 +9,7 @@ def find_table_names_from_sql_file(file_name) -> list:
 def process_sql_file(file_name) -> str:
     file, s = open(file_name, "r"), ''
 
-    # for line in file, remove comments, space out ( and ), add line to output string:
+    # for line in file, remove comments, space out '(' and ')', add line to output string:
     for line in file:
         line = line.rstrip()
         line = line.split('//')[0]
