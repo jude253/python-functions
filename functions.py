@@ -19,6 +19,7 @@ def process_sql_file(file_name):
 
     # remove extra whitespaces and make list
     words = string.split()
+    words = [word.lower() for word in words]
 
     return words
 
@@ -29,15 +30,15 @@ def find_table_names(words, rm_cte=False):
     ctes = set()
 
     for word in words:
-        if rm_cte and word.lower() == 'as':
+        if rm_cte and word == 'as':
             ctes.add(previous_word)
 
-        if previous_word.lower() == 'from' or previous_word.lower() == 'join':
+        if previous_word == 'from' or previous_word == 'join':
             if word != '(':
                 if rm_cte and word not in ctes:
-                    table_names.add(word.lower())
+                    table_names.add(word)
                 if not rm_cte:
-                    table_names.add(word.lower())
+                    table_names.add(word)
 
         previous_word = word
 
