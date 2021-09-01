@@ -1,4 +1,4 @@
-def process_sql_file(file_name) -> list:
+def process_sql_file(file_name):
     file, string = open(file_name, "r"), ''
 
     # for line in file, remove comments, space out '(' and ')', add line to output string:
@@ -6,7 +6,6 @@ def process_sql_file(file_name) -> list:
         line = line.rstrip()
         line = line.split('//')[0]
         line = line.split('--')[0]
-        line = line.split('#')[0]
         line = line.replace('(', ' ( ')
         line = line.replace(')', ' ) ')
         string += ' ' + line
@@ -24,20 +23,28 @@ def process_sql_file(file_name) -> list:
     return words
 
 
-def find_table_names(words) -> list:
+def find_table_names(words, rm_cte=False):
     table_names = set()
-    previous_word = None
+    previous_word = ''
+    ctes = set()
 
     for word in words:
-        if previous_word == 'from' or previous_word == 'join':
+        if rm_cte and word.lower() == 'as':
+            ctes.add(previous_word)
+
+        if previous_word.lower() == 'from' or previous_word.lower() == 'join':
             if word != '(':
-                table_names.add(word)
+                if rm_cte and word not in ctes:
+                    table_names.add(word.lower())
+                if not rm_cte:
+                    table_names.add(word.lower())
+
         previous_word = word
 
     return sorted(list(table_names))
 
 
 #  this function assumes that the .sql file does not have any syntax errors:
-def find_table_names_from_sql_file(file_name) -> list:
+def find_table_names_from_sql_file(file_name, rm_cte=False):
     words = process_sql_file(file_name)
-    return find_table_names(words)
+    return find_table_names(words, rm_cte=rm_cte)
