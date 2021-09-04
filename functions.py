@@ -17,9 +17,10 @@ def process_sql_file(file_name):
         r_multi_line = string.find('*/')
         string = string[:l_multi_line] + string[r_multi_line + 2:]
 
+    string = string.lower()
+    
     # remove extra whitespaces and make list
     words = string.split()
-    words = [word.lower() for word in words]
 
     return words
 
